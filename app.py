@@ -12,11 +12,6 @@ def home():
 def ABCD():
     return 'Hello, this is page 01!'
 
+# This is the main function to run the app. 
 if __name__ == '__main__':
     app.run(debug=True, port=8000) # we can specify the port number / change port here.
-
-
-
-# https://www.linkedin.com/in/nageamol/
-# https://www.linkedin.com/in/prashantpallati/
-# https://www.linkedin.com/in/arun-salokhe-9b168296/
