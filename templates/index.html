@@ -32,6 +32,11 @@
               <input type="text" class="form-control" id="desc" name="desc">
             </div>
 
+            <div class="mb-3">
+              <label for="desc" class="form-label">Final Date</label>
+              <input type="date" class="form-control" id="final_date" name="final_date" required>
+            </div>
+
             <!-- <div class="mb-3 form-check">
               <input type="checkbox" class="form-check-input" id="exampleCheck1">
               <label class="form-check-label" for="exampleCheck1">Check me out</label>
@@ -42,7 +47,8 @@
     </div>
 
     <div class="container  mt-5 mb-5">
-        <h2>Your TODO </h2>
+        <h2>Your ToDo List for - {{ current_date }}</h2>
+        <hr>
               <!-- use jinja -->
 
               {% if allTodo|length == 0 %}
@@ -59,7 +65,8 @@
                         <th scope="col">SNO</th>
                         <th scope="col">Title</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Time</th>
+                        <th scope="col">Created Date</th>
+                        <th scope="col">Final Date</th> 
                         <th scope="col">Action</th>
                       </tr>
                     </thead>
@@ -71,6 +78,7 @@
                           <td>{{todo.title}}</td>
                           <td>{{todo.desc}}</td>
                           <td>{{todo.date_created}}</td>
+                          <td>{{todo.final_date}}</td>
                           <td>
                             <!-- use of btn-sm is create btn small and 
                                   mx-1 is used to This class is used to add horizontal margin to an element. The m stands for margin, x stands for horizontal (left and right), and 0.5 is the size of the margin
