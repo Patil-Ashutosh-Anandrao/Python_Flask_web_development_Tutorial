@@ -156,11 +156,27 @@ def home():
     return render_template('index.html', allTodo=allTodo) # This is jinja2 and used to render the HTML file.
 
 
-@app.route('/update')
-def update():
-    allToday = Todo.query.all() # This is to get all the tasks from the database.
-    print(allToday) # This is to print all the tasks.
-    return 'This is the update page!'
+@app.route('/update/<int:sno>', methods=['GET','POST']) # <int:sno> is used to get the sno from the URL and /update/ is the route which is used to update the task.
+def update(sno):
+    if request.method == 'POST':    # This is to check if the form is submitted.
+        title = request.form['title'] # This is to get the title from the form.
+        desc = request.form['desc']
+
+        todo = Todo.query.filter_by(sno=sno).first() # This is to get the task from the database. first() is used to get the first task.
+        todo.title = title # This is to update the title of the task.
+        todo.desc = desc 
+        db.session.add(todo) # This is to add the task to the database.
+        db.session.commit()
+
+        return redirect('/') # This is to redirect to the home page.
+
+    #return render_template('update.html', todo=todo) # This is jinja2 and used to render the HTML file.
+
+    # allToday = Todo.query.all() # This is to get all the tasks from the database.
+    # print(allToday) # This is to print all the tasks.
+    # return 'This is the update page!'
+
+
 
 @app.route('/delete/<int:sno>') # <int:sno> is used to get the sno from the URL.
 def delete(sno):
