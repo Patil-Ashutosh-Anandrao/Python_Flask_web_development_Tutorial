@@ -99,7 +99,9 @@
 
 
 from flask import Flask
+from flask import request # This is used to get the form data.
 from flask import render_template # This is used to render the HTML file.
+from flask import redirect # This is used to redirect to another page.
 from flask_sqlalchemy import SQLAlchemy # This is used to connect to the database.
 from datetime import datetime # This is used to get the current date and time.
 
@@ -112,6 +114,8 @@ db = SQLAlchemy(app) # This is the database object.
 
 app.app_context().push() # This is to create the database table
 
+
+
 # create table to store the todo list
 class Todo(db.Model): # This is the class for the database table.
     sno = db.Column(db.Integer, primary_key=True) # This is the primary key column.
@@ -119,23 +123,55 @@ class Todo(db.Model): # This is the class for the database table.
     desc = db.Column(db.String(500), nullable=False) # This is the description column.
     date_created = db.Column(db.DateTime, default=datetime.utcnow) # This is the date column. utcnow is a function to get the current date and time.
 
+
+
 # always use this function and mention what you want to see insted of sno and title.
     def __repr__(self): # This is the representation function.
         return f"{self.sno} - {self.title}" # This is the representation string.
 
-@app.route('/')
+
+
+
+
+
+@app.route('/', methods=['GET', 'POST'])
+# This is the home route. methods is used to get the form data.
+
 def home():
+    if request.method == 'POST': # This is to check if the form is submitted.
+        title = request.form['title'] # This is to get the title from the form.
+        desc = request.form['desc'] 
+        todo = Todo(title=title, desc=desc) # This is to create a new task.
+        db.session.add(todo) # This is to add the task to the database.
+        db.session.commit() # This is to commit the task to the database.
 
     # This is to insert the first task into the database.
-    todo = Todo(title='First Task', desc='This is the first task')
-    db.session.add(todo)
-    db.session.commit()
+    # todo = Todo(title='First Task', desc='This is the first task')
+    # db.session.add(todo)
+    # db.session.commit()
 
     allTodo = Todo.query.all() # This is to get all the tasks from the database.
 
     # return 'Hello, Flask!'
     return render_template('index.html', allTodo=allTodo) # This is jinja2 and used to render the HTML file.
 
+
+@app.route('/update')
+def update():
+    allToday = Todo.query.all() # This is to get all the tasks from the database.
+    print(allToday) # This is to print all the tasks.
+    return 'This is the update page!'
+
+@app.route('/delete/<int:sno>') # <int:sno> is used to get the sno from the URL.
+def delete(sno):
+    todo = Todo.query.filter_by(sno=sno).first() # This is to get the task from the database. first() is used to get the first task.
+    # allToday = Todo.query.all() # This is to get all the tasks from the database.
+    db.session.delete(todo) # This is to delete the task from the database.
+    db.session.commit()
+    return redirect('/') # This is to redirect to the home page.
+
+    # print(allToday) 
+    # return 'This is the delete page!'
 
 
 @app.route('/page_1')
